@@ -1,0 +1,11 @@
+model: ensemble
+strategy: stacking
+# Replace with actual run IDs after individual models are trained
+component_run_ids:
+  - lgbm_recursive_XXXXXXXX
+  - lgbm_direct_XXXXXXXX
+  - nhits_XXXXXXXX
+  - nbeats_XXXXXXXX
+meta_learner: ridge
+seed: 42
+horizon: 28

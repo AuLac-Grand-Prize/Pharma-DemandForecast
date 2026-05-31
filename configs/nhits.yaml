@@ -1,0 +1,9 @@
+model: nhits
+seed: 42
+horizon: 28
+input_size: 91
+n_pool_kernel_size: [2, 2, 1]
+max_steps: 1000
+batch_size: 32
+learning_rate: 0.001
+accelerator: auto

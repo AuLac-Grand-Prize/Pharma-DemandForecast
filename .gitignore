@@ -1,0 +1,17 @@
+data/raw/
+data/processed/
+results/
+mlruns/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+.DS_Store
+*.parquet
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!results/.gitkeep
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+lightning_logs/

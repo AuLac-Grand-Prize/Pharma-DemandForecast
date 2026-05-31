@@ -1,0 +1,13 @@
+model: patchtst
+seed: 42
+horizon: 28
+input_size: 104
+patch_len: 16
+stride: 8
+d_model: 128
+n_heads: 4
+d_ff: 256
+max_steps: 500
+batch_size: 32
+learning_rate: 0.001
+accelerator: auto

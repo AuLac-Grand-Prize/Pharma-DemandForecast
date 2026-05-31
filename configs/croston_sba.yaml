@@ -1,0 +1,5 @@
+model: croston
+strategy: sba
+alpha: 0.1
+seed: 42
+horizon: 28

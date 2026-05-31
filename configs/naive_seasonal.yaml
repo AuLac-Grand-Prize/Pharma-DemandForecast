@@ -1,0 +1,5 @@
+model: naive
+strategy: seasonal
+seed: 42
+horizon: 28
+seasonal_period: 7
