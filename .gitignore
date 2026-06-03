@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+.env
+.env.local
+
+# Models
+data/raw/
+data/processed/
+runs/
+mlruns/
+*.ckpt
+*.pt
+
+# Notebooks
+.ipynb_checkpoints/

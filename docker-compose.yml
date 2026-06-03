@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    ports: ["5432:5432"]
+    environment:
+      POSTGRES_USER: pharma
+      POSTGRES_PASSWORD: pharma
+      POSTGRES_DB: demandforecast
+    volumes: ["pg-data:/var/lib/postgresql/data"]
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.17.0
+    ports: ["5000:5000"]
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlruns/mlflow.db --default-artifact-root /mlruns/artifacts
+    volumes: ["mlflow-data:/mlruns"]
+
+volumes:
+  pg-data:
+  mlflow-data:
