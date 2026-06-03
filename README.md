@@ -222,3 +222,20 @@ docker build -t demandforecast .     # build API image
 - **v0.1**: Prophet baseline, MAPE 25%.
 - **v0.2**: Multi-model ensemble, MAPE 15%.
 - **v1.0**: Federated learning across 1,000+ pharmacies.
+
+---
+
+## About PharmLink AI
+
+This repository is **Engine 4 / 4** of [**PharmLink AI**](https://github.com/AuLac-Grand-Prize) — Vietnam's *Made-in-Vietnam* pharmaceutical AI platform serving 60,000+ pharmacies and up to 100 million citizens, in service of medication safety and national health-data sovereignty.
+
+**The platform:**
+- 💊 [VietDrug AI](https://github.com/AuLac-Grand-Prize/Pharma-VietDrugAI) — drug-interaction checks
+- 📝 [PrescriptionVision](https://github.com/AuLac-Grand-Prize/Pharma-PrescriptionVision) — handwritten-prescription OCR
+- 🤖 [PharmaGPT-VN](https://github.com/AuLac-Grand-Prize/PharmaGPT-VN) — Vietnamese pharma assistant
+- 📈 **DemandForecast AI** — demand forecasting *(this repo)*
+- 🖥️ [Pharma Portal](https://github.com/AuLac-Grand-Prize/Pharma-Portal) — the pharmacist workspace
+
+**Technology ownership:** the forecasting models are trained entirely on Vietnamese market data, capturing local seasonality, outbreak patterns, and medication-usage habits — combined with real-time MoH epidemiology and weather signals.
+
+> **Disclaimer:** PharmLink AI augments pharmacists — it does not replace them. Every clinical decision rests with a licensed pharmacist; outputs are validated by the Vietnamese Clinical Pharmacist Scientific Council.
