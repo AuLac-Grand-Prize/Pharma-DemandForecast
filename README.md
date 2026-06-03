@@ -185,14 +185,14 @@ Toàn bộ harness benchmark & huấn luyện mô hình (trước đây ở nhá
 
 ```bash
 # Tiền xử lý dữ liệu M5 → long format + features
-make preprocess
+make research-preprocess
 
-# Huấn luyện theo config
-python src/train.py --config configs/lgbm_recursive.yaml
-python src/train.py --config configs/nhits.yaml
+# Huấn luyện theo config (mặc định configs/lgbm_recursive.yaml)
+make research-train CONFIG=configs/lgbm_recursive.yaml
+make research-train CONFIG=configs/nhits.yaml
 
 # Đánh giá lại từ run đã có
-python src/train.py --config configs/ensemble_stack.yaml --eval-only --run-id <id>
+make research-eval CONFIG=configs/ensemble_stack.yaml RUN_ID=<id>
 ```
 
 - **Splits**: TRAIN_END=1857, VAL1=1858–1885, VAL2=1886–1913.

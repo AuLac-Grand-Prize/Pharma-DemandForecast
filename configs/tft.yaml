@@ -1,0 +1,13 @@
+model: tft
+seed: 42
+horizon: 28
+input_size: 91
+hidden_size: 128
+n_head: 4
+dropout: 0.1
+hist_exog_list: [sell_price, price_change]
+futr_exog_list: [dayofweek, month, event_flag_1, snap]
+max_steps: 500
+batch_size: 32
+learning_rate: 0.001
+accelerator: auto

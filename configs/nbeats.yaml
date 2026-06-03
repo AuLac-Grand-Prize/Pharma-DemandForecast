@@ -1,0 +1,11 @@
+model: nbeats
+seed: 42
+horizon: 28
+input_size: 91
+stack_types: [trend, seasonality]
+n_harmonics: 2
+n_polynomials: 2
+max_steps: 1000
+batch_size: 32
+learning_rate: 0.001
+accelerator: auto

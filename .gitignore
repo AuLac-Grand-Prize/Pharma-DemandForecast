@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
+*.pyo
 .venv/
 venv/
 *.egg-info/
@@ -19,13 +20,20 @@ build/
 .env
 .env.local
 
-# Models
+# Data & models (lưu trên S3/MinIO, không commit)
 data/raw/
 data/processed/
+results/
 runs/
 mlruns/
+lightning_logs/
 *.ckpt
 *.pt
+*.parquet
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!results/.gitkeep
 
 # Notebooks
 .ipynb_checkpoints/
+*.ipynb_checkpoints

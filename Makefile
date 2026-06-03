@@ -1,9 +1,13 @@
-.PHONY: install dev test lint format services-up seed-sample train backtest
+.PHONY: install dev test lint format services-up services-down seed-sample train backtest \
+        research-download research-preprocess research-train research-eval notebook mlflow-ui
 
-PYTHON ?= python3.11
-VENV   ?= .venv
-PORT   ?= 8004
+PYTHON   ?= python3.11
+VENV     ?= .venv
+PORT     ?= 8004
+CONFIG   ?= configs/lgbm_recursive.yaml
+RUN_ID   ?= latest
 
+# --- Service (FastAPI) ---
 install:
 	$(PYTHON) -m venv $(VENV)
 	$(VENV)/bin/pip install -U pip
@@ -26,6 +30,9 @@ format:
 services-up:
 	docker compose up -d postgres redis mlflow
 
+services-down:
+	docker compose down
+
 seed-sample:
 	$(VENV)/bin/python scripts/seed_sample.py
 
@@ -34,3 +41,23 @@ train:
 
 backtest:
 	$(VENV)/bin/python scripts/backtest.py
+
+# --- ML research (M5 benchmark, hợp nhất từ nhánh kaggle) ---
+research-download:
+	PYTHONPATH=$(shell pwd) python src/data/download.py
+
+research-preprocess:
+	PYTHONPATH=$(shell pwd) python src/data/preprocess.py
+	PYTHONPATH=$(shell pwd) python src/data/features.py
+
+research-train:
+	PYTHONPATH=$(shell pwd) python src/train.py --config $(CONFIG)
+
+research-eval:
+	PYTHONPATH=$(shell pwd) python src/train.py --config $(CONFIG) --eval-only --run-id $(RUN_ID)
+
+notebook:
+	jupyter lab notebooks/
+
+mlflow-ui:
+	mlflow ui --port 5000

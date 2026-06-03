@@ -1,0 +1,9 @@
+model: ensemble
+strategy: average
+# Replace with actual run IDs after individual models are trained
+component_run_ids:
+  - lgbm_recursive_XXXXXXXX
+  - nhits_XXXXXXXX
+  - nbeats_XXXXXXXX
+seed: 42
+horizon: 28

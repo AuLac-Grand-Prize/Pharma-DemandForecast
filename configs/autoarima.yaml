@@ -1,0 +1,5 @@
+model: autoarima
+freq: D
+n_jobs: -1
+seed: 42
+horizon: 28

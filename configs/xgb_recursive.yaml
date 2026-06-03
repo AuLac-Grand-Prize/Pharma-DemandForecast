@@ -1,0 +1,19 @@
+model: xgb
+strategy: recursive
+seed: 42
+horizon: 28
+features:
+  lags: [7, 14, 28, 35, 42]
+  rolling_windows: [7, 28]
+  calendar: true
+  price: true
+xgb_params:
+  n_estimators: 1000
+  learning_rate: 0.05
+  max_depth: 7
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  tree_method: hist
+  enable_categorical: true

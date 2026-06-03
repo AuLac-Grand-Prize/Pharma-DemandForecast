@@ -1,0 +1,4 @@
+model: naive
+strategy: last
+seed: 42
+horizon: 28
