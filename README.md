@@ -1,68 +1,68 @@
-# DemandForecast AI — Engine dự báo nhu cầu thuốc
+# DemandForecast AI — Drug demand-forecasting engine
 
-> **Engine 4 / 4 của nền tảng PharmLink AI.**
-> Time-series ensemble (statistical + gradient boosting + deep learning) → giảm 40% tồn kho chết, giảm 60% hết hàng đột xuất.
+> **Engine 4 / 4 of the PharmLink AI platform.**
+> Time-series ensemble (statistical + gradient boosting + deep learning) → 40% less dead stock, 60% fewer sudden stockouts.
 
 ---
 
-## 1. Vấn đề giải quyết
+## 1. Problem it solves
 
-Nhà thuốc Việt Nam đặt hàng theo cảm tính → tồn kho chết 10–15% (thuốc hết hạn = lãng phí 3.000–5.000 tỷ VNĐ/năm toàn ngành). Khi có dịch (sốt xuất huyết, cúm mùa, COVID), nơi thì hết thuốc nơi thì dư — không ai điều phối.
+Vietnamese pharmacies order on gut feel → 10–15% dead stock (expired drugs = an estimated 3,000–5,000 billion VND wasted per year industry-wide). When an outbreak hits (dengue, seasonal flu, COVID), some stores run out while others overstock — with no one coordinating.
 
-DemandForecast AI dự báo nhu cầu từng SKU theo ngày, kết hợp tín hiệu ngoại sinh (dịch tễ, thời tiết, lễ tết), rồi quy đổi sang **gợi ý đặt hàng tối ưu** (reorder quantity) cho từng nhà thuốc.
+DemandForecast AI forecasts demand per SKU per day, combines exogenous signals (epidemiology, weather, holidays), and converts them into **optimal reorder suggestions** (reorder quantity) for each pharmacy.
 
-## 2. Công nghệ lõi
+## 2. Core technology
 
-- **Ensemble nhiều tầng mô hình** (predictions kết hợp bằng learned weights / meta-learner):
-  - **Statistical** — Prophet, ETS/Theta, AutoARIMA: bắt seasonality + holidays Việt Nam (Tết, Trung thu, mùa cảm cúm).
-  - **Gradient Boosting** — LightGBM, XGBoost (recursive & direct multi-step): bắt quan hệ phi tuyến với covariates.
-  - **Deep Learning** — LSTM, N-BEATS, N-HiTS, PatchTST, Temporal Fusion Transformer (TFT): multi-horizon, attention trên chuỗi dài.
-- **Tín hiệu ngoại sinh** (covariates):
-  - Dữ liệu giám sát dịch của Bộ Y tế (sốt xuất huyết, cúm, tay chân miệng).
-  - Dự báo thời tiết (Tổng cục Khí tượng) — nắng nóng → tăng thuốc tiêu hóa.
-  - Lịch học, lịch lễ tết — ảnh hưởng nhu cầu thuốc cảm/sốt.
-- **Personalization theo location**: mô hình học rằng nhà thuốc gần BV tim mạch bán nhiều thuốc tim, nhà thuốc gần trường có spike thuốc cảm tựu trường.
+- **Multi-tier model ensemble** (predictions combined via learned weights / a meta-learner):
+  - **Statistical** — Prophet, ETS/Theta, AutoARIMA: capture seasonality + Vietnamese holidays (Tết, Mid-Autumn, flu season).
+  - **Gradient Boosting** — LightGBM, XGBoost (recursive & direct multi-step): capture nonlinear relationships with covariates.
+  - **Deep Learning** — LSTM, N-BEATS, N-HiTS, PatchTST, Temporal Fusion Transformer (TFT): multi-horizon, attention over long sequences.
+- **Exogenous signals** (covariates):
+  - Ministry of Health disease-surveillance data (dengue, flu, hand-foot-mouth).
+  - Weather forecasts (National Hydrometeorological Service) — heat waves → more digestive medicine.
+  - School calendars and public holidays — affect demand for cold/fever medicine.
+- **Location-based personalization**: the model learns that a pharmacy near a cardiology hospital sells more heart medication, and one near a school spikes in cold medicine at the start of term.
 - **Stack**: Darts (TFT/LSTM/N-HiTS), Prophet, PyTorch Lightning, scikit-learn, LightGBM/XGBoost, FastAPI, PostgreSQL + TimescaleDB, Redis, MLflow tracking.
 
-## 3. KPIs mục tiêu
+## 3. Target KPIs
 
-| Chỉ số | Mục tiêu |
-|--------|----------|
-| MAPE / WMAPE 30 ngày (top-100 SKU) | ≤ 15% |
-| Giảm tồn kho chết | −40% |
-| Giảm tỷ lệ hết hàng đột xuất | −60% |
-| Latency forecast 1.000 SKU | ≤ 5 giây |
+| Metric | Target |
+|--------|--------|
+| 30-day MAPE / WMAPE (top-100 SKUs) | ≤ 15% |
+| Reduction in dead stock | −40% |
+| Reduction in sudden stockouts | −60% |
+| Forecast latency for 1,000 SKUs | ≤ 5 s |
 
-## 4. Tech stack & phiên bản
+## 4. Tech stack & versions
 
-| Lớp | Thành phần | Phiên bản |
-|-----|-----------|-----------|
+| Layer | Component | Version |
+|-------|-----------|---------|
 | Runtime | Python | ≥ 3.11 |
 | API | FastAPI / Uvicorn / Pydantic | ≥ 0.115 / ≥ 0.32 / ≥ 2.9 |
 | Time-series | Darts / Prophet | ≥ 0.31 / ≥ 1.1.5 |
 | Deep learning | PyTorch / PyTorch Lightning | ≥ 2.4 / ≥ 2.4 |
 | ML | scikit-learn / LightGBM / XGBoost | ≥ 1.5 / — / — |
 | Data | pandas / numpy | ≥ 2.2 / ≥ 1.26 |
-| Hạ tầng | PostgreSQL+TimescaleDB / Redis | pg16 / ≥ 5.1 |
+| Infrastructure | PostgreSQL+TimescaleDB / Redis | pg16 / ≥ 5.1 |
 | Tracking | MLflow | ≥ 2.17 |
 | Logging | structlog | ≥ 24.4 |
 | Dev | pytest / pytest-cov / ruff / mypy | ≥ 8.3 / ≥ 5.0 / ≥ 0.7 / ≥ 1.13 |
 
-## 5. Cấu trúc thư mục
+## 5. Directory structure
 
 ```
 pharma-demandforecast/
 ├── src/demandforecast/
 │   ├── api/
-│   │   ├── main.py            # Khởi tạo FastAPI app
+│   │   ├── main.py            # FastAPI app bootstrap
 │   │   └── routes/
 │   │       ├── forecast.py    # POST /v1/forecast
 │   │       ├── reorder.py     # POST /v1/reorder-suggestions
 │   │       └── health.py      # GET /health
 │   ├── core/
-│   │   ├── config.py          # Pydantic-settings, nạp .env
-│   │   └── logging.py         # Khởi tạo structlog
-│   ├── models/                # Wrapper từng mô hình
+│   │   ├── config.py          # Pydantic-settings, loads .env
+│   │   └── logging.py         # structlog bootstrap
+│   ├── models/                # Per-model wrappers
 │   │   ├── prophet_model.py   # Prophet (seasonality + holidays)
 │   │   ├── lstm_model.py      # LSTM (PyTorch Lightning)
 │   │   └── tft_model.py       # Temporal Fusion Transformer
@@ -72,14 +72,14 @@ pharma-demandforecast/
 │   │   ├── forecast_service.py# Orchestrate sales + covariates → ensemble
 │   │   └── reorder_service.py # Forecast → reorder qty (lead time, safety stock)
 │   ├── data/                  # Loaders (sales, weather, MoH disease feed)
-│   └── training/              # Pipeline huấn luyện (Lightning)
+│   └── training/              # Training pipeline (Lightning)
 ├── tests/
 │   └── unit/
 │       ├── test_ensemble.py
 │       └── test_reorder_service.py
-├── notebooks/                 # EDA, so sánh mô hình
+├── notebooks/                 # EDA, model comparison
 ├── scripts/                   # train.py, backtest.py, seed_sample.py
-├── configs/                   # YAML config từng mô hình (xem §10)
+├── configs/                   # Per-model YAML configs (see §10)
 ├── data/                      # (gitignored) sales/weather/MoH cache
 ├── docker-compose.yml         # postgres+timescale, redis, mlflow
 ├── Dockerfile
@@ -88,36 +88,36 @@ pharma-demandforecast/
 └── .env.example
 ```
 
-## 6. Khởi chạy nhanh
+## 6. Quick start
 
 ```bash
 cp .env.example .env
-make install             # tạo venv, pip install -e ".[dev]"
+make install             # create venv, pip install -e ".[dev]"
 make services-up         # postgres+timescale, mlflow, redis (docker compose)
-make seed-sample         # nạp 6 tháng dữ liệu mẫu
-make dev                 # FastAPI tại http://localhost:8004
+make seed-sample         # load 6 months of sample data
+make dev                 # FastAPI at http://localhost:8004
 ```
 
-Các target Makefile khác: `make test`, `make lint`, `make format`, `make train`, `make backtest`, `make services-down`.
+Other Makefile targets: `make test`, `make lint`, `make format`, `make train`, `make backtest`, `make services-down`.
 
-## 7. Cấu hình (.env)
+## 7. Configuration (.env)
 
-| Biến | Mục đích | Mặc định |
-|------|----------|----------|
-| `APP_ENV` | Môi trường (development/production) | development |
-| `APP_PORT` | Cổng FastAPI | 8004 |
-| `LOG_LEVEL` | Mức log | INFO |
-| `POSTGRES_DSN` | Kết nối async TimescaleDB | postgresql+asyncpg://pharma:pharma@localhost:5432/demandforecast |
-| `REDIS_URL` | Cache dự báo | redis://localhost:6379/0 |
-| `CACHE_TTL_SECONDS` | TTL cache forecast | 600 |
-| `MLFLOW_TRACKING_URI` | Server MLflow | http://localhost:5000 |
-| `MOH_DISEASE_FEED_URL` | API giám sát dịch Bộ Y tế | — |
-| `MOH_API_KEY` | Token xác thực MoH | — |
-| `WEATHER_API_URL` | API thời tiết | — |
-| `WEATHER_API_KEY` | Token thời tiết | — |
-| `INTERNAL_API_TOKEN` | Secret xác thực giữa các service | — |
-| `DEFAULT_HORIZON_DAYS` | Horizon dự báo mặc định | 30 |
-| `DEFAULT_QUANTILES` | Các mức quantile | 0.1,0.5,0.9 |
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `APP_ENV` | Environment (development/production) | development |
+| `APP_PORT` | FastAPI port | 8004 |
+| `LOG_LEVEL` | Log level | INFO |
+| `POSTGRES_DSN` | Async TimescaleDB connection | postgresql+asyncpg://pharma:pharma@localhost:5432/demandforecast |
+| `REDIS_URL` | Forecast cache | redis://localhost:6379/0 |
+| `CACHE_TTL_SECONDS` | Forecast cache TTL | 600 |
+| `MLFLOW_TRACKING_URI` | MLflow server | http://localhost:5000 |
+| `MOH_DISEASE_FEED_URL` | Ministry of Health surveillance API | — |
+| `MOH_API_KEY` | MoH auth token | — |
+| `WEATHER_API_URL` | Weather API | — |
+| `WEATHER_API_KEY` | Weather token | — |
+| `INTERNAL_API_TOKEN` | Inter-service auth secret | — |
+| `DEFAULT_HORIZON_DAYS` | Default forecast horizon | 30 |
+| `DEFAULT_QUANTILES` | Quantile levels | 0.1,0.5,0.9 |
 
 ## 8. API contract
 
@@ -152,7 +152,7 @@ Response:
 ```
 
 ### `POST /v1/reorder-suggestions`
-Trả về gợi ý đặt hàng tối ưu dựa trên forecast (p50) + safety stock + lead time của nhà phân phối.
+Returns optimal reorder suggestions based on the forecast (p50) + safety stock + distributor lead time.
 
 ### `GET /health`
 Liveness/readiness probe.
@@ -160,55 +160,55 @@ Liveness/readiness probe.
 ## 9. Testing
 
 ```bash
-make test                # pytest + coverage (ngưỡng 80%)
+make test                # pytest + coverage (80% threshold)
 make lint                # ruff check + mypy
 make format              # ruff format + --fix
 ```
 
-- `tests/unit/test_ensemble.py` — chuẩn hóa trọng số & logic kết hợp của `EnsembleStacker`.
-- `tests/unit/test_reorder_service.py` — công thức tính reorder quantity.
+- `tests/unit/test_ensemble.py` — weight normalization & combination logic of `EnsembleStacker`.
+- `tests/unit/test_reorder_service.py` — reorder-quantity formula.
 
-## 10. ML training & research (hợp nhất từ nhánh `kaggle`)
+## 10. ML training & research (merged from the `kaggle` branch)
 
-Toàn bộ harness benchmark & huấn luyện mô hình (trước đây ở nhánh `kaggle`) đã được hợp nhất vào `main`. Đây là pipeline nghiên cứu chạy trên benchmark forecasting **M5** (30.490 chuỗi × 1.913 ngày).
+The full model-benchmarking & training harness (previously on the `kaggle` branch) has been merged into `main`. This research pipeline runs on the **M5** forecasting benchmark (30,490 series × 1,913 days).
 
-**Danh mục mô hình** (`src/models/`):
+**Model catalog** (`src/models/`):
 
-| Tầng | Mô hình | File |
-|------|---------|------|
+| Tier | Models | Files |
+|------|--------|-------|
 | Baseline | Naive (last-value, seasonal), Croston/SBA | `models/baseline/naive.py`, `models/baseline/croston.py` |
 | Statistical | ETS, Theta, AutoARIMA | `models/statistical/ets.py` |
 | Gradient Boosting | LightGBM, XGBoost (recursive + direct) | `models/ml/lgbm.py`, `models/ml/xgb.py`, `models/ml/_rollout.py` |
 | Deep Learning | N-BEATS, N-HiTS, TFT, PatchTST | `models/deep/{nbeats,nhits,tft,patchtst}.py` |
 
-**Pipeline** (`src/train.py`, config-driven qua `configs/*.yaml`):
+**Pipeline** (`src/train.py`, config-driven via `configs/*.yaml`):
 
 ```bash
-# Tiền xử lý dữ liệu M5 → long format + features
+# Preprocess M5 data → long format + features
 make research-preprocess
 
-# Huấn luyện theo config (mặc định configs/lgbm_recursive.yaml)
+# Train by config (default configs/lgbm_recursive.yaml)
 make research-train CONFIG=configs/lgbm_recursive.yaml
 make research-train CONFIG=configs/nhits.yaml
 
-# Đánh giá lại từ run đã có
+# Re-evaluate from an existing run
 make research-eval CONFIG=configs/ensemble_stack.yaml RUN_ID=<id>
 ```
 
 - **Splits**: TRAIN_END=1857, VAL1=1858–1885, VAL2=1886–1913.
-- **Features** (`src/data/features.py`): lag (7/14/28/35/42), rolling mean/std, day-of-week, month, holiday flags, price change.
-- **Đánh giá** (`src/metrics/evaluate.py`): **WMAPE** (weighted MAPE theo sản lượng) và **RMSSE** (M5 12-level hierarchy weights).
-- **Ensemble** (`configs/ensemble_stack.yaml`): stacking với meta-learner Ridge trên OOF predictions.
-- **Tracking**: MLflow log hyperparams + metrics + git hash; kết quả lưu `results/<run_id>/{metrics.json,predictions.parquet}`.
+- **Features** (`src/data/features.py`): lags (7/14/28/35/42), rolling mean/std, day-of-week, month, holiday flags, price change.
+- **Evaluation** (`src/metrics/evaluate.py`): **WMAPE** (volume-weighted MAPE) and **RMSSE** (M5 12-level hierarchy weights).
+- **Ensemble** (`configs/ensemble_stack.yaml`): stacking with a Ridge meta-learner over OOF predictions.
+- **Tracking**: MLflow logs hyperparams + metrics + git hash; results saved to `results/<run_id>/{metrics.json,predictions.parquet}`.
 
-## 11. Tích hợp ngoại sinh
+## 11. Exogenous integrations
 
-| Nguồn | Sử dụng | Tần suất |
-|-------|---------|----------|
-| Hệ thống giám sát dịch Bộ Y tế | Cảnh báo dịch theo tỉnh | Hàng ngày |
-| Tổng cục Khí tượng | Nhiệt độ, độ ẩm, mùa | Hàng giờ |
-| Lịch lễ Việt Nam | Tết, lễ truyền thống | Hàng năm (cố định) |
-| Bán hàng các nhà thuốc | Sales history (federated) | Realtime |
+| Source | Use | Frequency |
+|--------|-----|-----------|
+| Ministry of Health surveillance system | Province-level outbreak alerts | Daily |
+| National Hydrometeorological Service | Temperature, humidity, season | Hourly |
+| Vietnamese holiday calendar | Tết, traditional holidays | Annual (fixed) |
+| Pharmacy sales | Sales history (federated) | Real-time |
 
 ## 12. Docker
 
@@ -220,5 +220,5 @@ docker build -t demandforecast .     # build API image
 ## 13. Roadmap
 
 - **v0.1**: Prophet baseline, MAPE 25%.
-- **v0.2**: Ensemble nhiều mô hình, MAPE 15%.
-- **v1.0**: Federated learning across 1.000+ pharmacies.
+- **v0.2**: Multi-model ensemble, MAPE 15%.
+- **v1.0**: Federated learning across 1,000+ pharmacies.
