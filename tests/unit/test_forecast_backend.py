@@ -111,6 +111,16 @@ def test_cache_key_differs_on_pharmacy_horizon_covariates():
     assert cache_key("ph-1", ["a", "b"], 30, True) != base
 
 
+def test_cache_key_is_injective_over_delimiter_components():
+    # Regression: a delimiter (",") inside a sku_id must not let a structurally
+    # different request collide onto the same key (cache poisoning).
+    assert cache_key("ph", ["a,b"], 30, True) != cache_key("ph", ["a", "b"], 30, True)
+    # A ":" in the pharmacy_id must not collide with the same char in a sku_id.
+    assert cache_key("p:1", ["a"], 30, True) != cache_key("p", ["1:a"], 30, True)
+    # Identical inputs still map to an identical (stable) key.
+    assert cache_key("ph", ["a,b"], 30, True) == cache_key("ph", ["a,b"], 30, True)
+
+
 def test_fake_cache_satisfies_protocol():
     assert isinstance(FakeForecastCache(), ForecastCache)
 

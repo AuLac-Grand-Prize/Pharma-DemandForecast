@@ -19,6 +19,7 @@ runs without darts/prophet/torch/lightgbm/xgboost/asyncpg/redis/mlflow.
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Any, Protocol, runtime_checkable
@@ -207,9 +208,27 @@ def cache_key(
     Order-independent over ``sku_ids`` so ``[a, b]`` and ``[b, a]`` collide on
     the same logical forecast; differing pharmacy/horizon/covariate flags do
     not collide.
+
+    The key is **injective**: it is derived from a JSON-serialized payload of
+    the structural request fields (not a raw delimiter-join), so components
+    containing the old delimiters (``,`` or ``:``) cannot make structurally
+    different requests collide. For example ``sku_ids=['a,b']`` no longer
+    collides with ``['a', 'b']``, and ``pharmacy_id='p:1', sku_ids=['a']`` no
+    longer collides with ``pharmacy_id='p', sku_ids=['1:a']``.
     """
-    skus = ",".join(sorted(sku_ids))
-    return f"forecast:{pharmacy_id}:{skus}:{horizon_days}:{int(include_covariates)}"
+    payload = json.dumps(
+        {
+            "p": pharmacy_id,
+            "s": sorted(sku_ids),
+            "h": horizon_days,
+            "c": int(include_covariates),
+        },
+        separators=(",", ":"),
+        ensure_ascii=False,
+    )
+    return "forecast:" + hashlib.blake2b(
+        payload.encode("utf-8"), digest_size=16
+    ).hexdigest()
 
 
 # The route stores the serialized forecasts list (each item a
