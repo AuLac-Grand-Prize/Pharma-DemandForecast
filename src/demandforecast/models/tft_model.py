@@ -7,8 +7,8 @@ class TFTModel:
         self.output_chunk_length = output_chunk_length
         # TODO: darts.models.TFTModel(...)
 
-    def fit(self, series, past_covariates=None, future_covariates=None) -> None:  # noqa: ANN001
+    def fit(self, series, past_covariates=None, future_covariates=None) -> None:
         pass
 
-    def predict(self, n: int, past_covariates=None, future_covariates=None):  # noqa: ANN001, ANN201
+    def predict(self, n: int, past_covariates=None, future_covariates=None):
         pass

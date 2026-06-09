@@ -5,8 +5,8 @@ class ProphetModel:
     def __init__(self) -> None:
         self.model = None  # TODO: prophet.Prophet(holidays=vietnamese_holidays())
 
-    def fit(self, df) -> None:  # noqa: ANN001
+    def fit(self, df) -> None:
         pass
 
-    def predict(self, periods: int):  # noqa: ANN201
+    def predict(self, periods: int):
         pass

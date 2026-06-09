@@ -7,8 +7,8 @@ class LSTMModel:
         self.output_chunk_length = output_chunk_length
         # TODO: darts.models.RNNModel(model="LSTM", ...)
 
-    def fit(self, series) -> None:  # noqa: ANN001
+    def fit(self, series) -> None:
         pass
 
-    def predict(self, n: int):  # noqa: ANN201
+    def predict(self, n: int):
         pass
